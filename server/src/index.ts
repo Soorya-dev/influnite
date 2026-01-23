@@ -2,8 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import connectDB from "./config/database.js";
-import authRoutes from "./routes/authRoutes.js";
+import connectDB from "./config/database";
+import authRoutes from "./routes/authRoutes";
+import router from "./routes/authRoutes";
 
 dotenv.config();
 
@@ -17,6 +18,8 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
+
+app.use('/soorya', router);
 
 // Minimal test route
 app.get("/health", (req, res) => {

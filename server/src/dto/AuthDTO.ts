@@ -1,20 +1,6 @@
-import { UserRole } from "../entities/User.js";
-
-export interface RegisterUserRequestDTO {
-    name: string;
+export interface AuthDTO {
     email: string;
     password: string;
-    role: UserRole;
-}
-
-export interface LoginUserRequestDTO {
-    email: string;
-    password: string;
-}
-
-export interface UserResponseDTO {
-    id: string;
-    name: string;
-    email: string;
-    role: UserRole;
+    name?: string;
+    confirmPassword?: string;
 }
