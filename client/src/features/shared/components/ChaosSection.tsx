@@ -1,230 +1,148 @@
-// ChaosSection.tsx — The Problem section
-// Editorial, text-forward layout showing the fragmented status quo
-// No fake app screenshots — honest numbered list + strong copy
-// Answers: "Why is this easier?"
-
 import React from 'react'
 import { motion } from 'framer-motion'
 
-const STEPS = [
-  { num: '01', action: 'Find potential creators',               tool: 'Instagram / TikTok'    },
-  { num: '02', action: 'Reach out to each one manually',        tool: 'Instagram DMs'          },
-  { num: '03', action: 'Agree on pricing and scope',            tool: 'WhatsApp'               },
-  { num: '04', action: 'Send the campaign brief',               tool: 'Email'                  },
-  { num: '05', action: 'Get contracts reviewed and signed',     tool: 'DocuSign / Docs'        },
-  { num: '06', action: 'Track who has posted what',             tool: 'Google Sheets'          },
-  { num: '07', action: 'Follow up on missing content',          tool: 'WhatsApp (again)'       },
-  { num: '08', action: 'Request revisions',                     tool: 'DMs, Email, calls'      },
-  { num: '09', action: 'Transfer payment manually',             tool: 'PayPal / Bank Transfer' },
-  { num: '10', action: 'Try to measure what actually worked',   tool: 'Manually'               },
+const brandProblems = [
+  'Finding the right creators',
+  'Managing campaigns',
+  'Tracking approvals',
+  'Delayed communication',
 ]
 
-const rowVar = {
-  hidden:  { opacity: 0, x: -16 },
-  visible: { opacity: 1, x: 0,  transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const } },
+const creatorProblems = [
+  'Finding quality campaigns',
+  'Waiting for replies',
+  'Payment uncertainty',
+  'Building credibility',
+]
+
+const eras = [
+  { label: 'Before', title: 'TV, newspapers, billboards', detail: 'Brands bought attention in fixed places.' },
+  { label: 'Then', title: 'Social feeds changed discovery', detail: 'People started trusting voices they chose to follow.' },
+  { label: 'Now', title: 'Creators shape decisions', detail: 'A good creator partnership can feel more human than an ad.' },
+]
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0 },
 }
 
-const stagger = {
-  hidden:  {},
-  visible: { transition: { staggerChildren: 0.055 } },
-}
+const ProblemList: React.FC<{ title: string; items: string[]; align?: 'left' | 'right' }> = ({
+  title,
+  items,
+  align = 'left',
+}) => (
+  <motion.div
+    variants={fadeUp}
+    className="border-t border-white/10 pt-8"
+  >
+    <p className="mb-8 font-['DM_Mono'] text-[0.68rem] uppercase tracking-[0.18em] text-white/30">
+      {title}
+    </p>
+    <div className="space-y-5">
+      {items.map((item) => (
+        <div
+          key={item}
+          className={`flex items-center gap-4 ${align === 'right' ? 'lg:flex-row-reverse lg:text-right' : ''}`}
+        >
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#6A0D7D] shadow-[0_0_18px_rgba(106,13,125,0.75)]" />
+          <span className="font-['Outfit'] text-lg text-white/72 sm:text-xl">{item}</span>
+        </div>
+      ))}
+    </div>
+  </motion.div>
+)
 
 const ChaosSection: React.FC = () => (
-  <section
-    id="why-influnite"
-    style={{
-      position:  'relative',
-      padding:   '9rem 2rem 7rem',
-      boxSizing: 'border-box',
-    }}
-  >
-    <div style={{ maxWidth: 1120, margin: '0 auto' }}>
-
-      {/* ── Top label ────────────────────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-60px' }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        style={{ marginBottom: '4.5rem' }}
-      >
-        <span style={{
-          fontFamily:    "'DM Mono', monospace",
-          fontSize:      '0.62rem',
-          color:         'rgba(255,255,255,0.25)',
-          letterSpacing: '0.14em',
-          textTransform: 'uppercase',
-          display:       'block',
-          marginBottom:  '1.5rem',
-        }}>
-          The Current Reality
-        </span>
-        <h2 style={{
-          fontFamily:    "'Cormorant Garamond', serif",
-          fontSize:      'clamp(2.2rem, 3.8vw, 3.6rem)',
-          fontWeight:    700,
-          color:         '#ffffff',
-          lineHeight:    1.08,
-          letterSpacing: '-0.02em',
-          marginBottom:  '1.2rem',
-          maxWidth:      640,
-        }}>
-          A single campaign.<br />
-          <em style={{ fontStyle: 'italic', color: 'rgba(255,255,255,0.38)' }}>
-            Way too many apps.
-          </em>
-        </h2>
-        <p style={{
-          fontFamily: "'Outfit', sans-serif",
-          fontSize:   '1rem',
-          color:      'rgba(255,255,255,0.42)',
-          lineHeight: 1.75,
-          fontWeight: 300,
-          maxWidth:   520,
-        }}>
-          Most brands manage creator campaigns across five or six different tools.
-          Every handoff is a chance for something to get lost.
-        </p>
-      </motion.div>
-
-      {/* ── Two-column: Steps list + Right copy ──────────────────────── */}
-      <div style={{
-        display:             'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap:                 '5rem',
-        alignItems:          'start',
-      }}
-        className="chaos-grid"
-      >
-        {/* Left: numbered step list */}
+  <>
+    <section id="why-influnite" className="relative px-6 py-24 sm:py-32">
+      <div className="mx-auto max-w-6xl">
         <motion.div
-          variants={stagger}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-40px' }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ staggerChildren: 0.12 }}
+          className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-end"
         >
-          {STEPS.map((step) => (
+          <motion.div variants={fadeUp}>
+            <p className="mb-5 font-['DM_Mono'] text-[0.68rem] uppercase tracking-[0.18em] text-white/30">
+              Marketing has changed
+            </p>
+            <h2 className="font-['Cormorant_Garamond'] text-5xl font-bold leading-[0.98] text-white sm:text-6xl lg:text-7xl">
+              People do not discover brands the way they used to.
+            </h2>
+          </motion.div>
+
+          <motion.p
+            variants={fadeUp}
+            className="max-w-2xl font-['Outfit'] text-lg font-light leading-8 text-white/48 sm:text-xl"
+          >
+            For a long time, marketing meant buying space: a newspaper column, a TV slot, a billboard on a busy road. Today, people discover products through creators they already watch on Instagram and YouTube. That shift is simple, but it changes the whole working relationship.
+          </motion.p>
+        </motion.div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ staggerChildren: 0.12, delayChildren: 0.12 }}
+          className="mt-16 grid gap-4 md:grid-cols-3"
+        >
+          {eras.map((era) => (
             <motion.div
-              key={step.num}
-              variants={rowVar}
-              style={{
-                display:       'flex',
-                alignItems:    'baseline',
-                gap:           '1rem',
-                padding:       '0.85rem 0',
-                borderBottom:  '1px solid rgba(255,255,255,0.055)',
-              }}
+              key={era.label}
+              variants={fadeUp}
+              className="min-h-64 border border-white/8 bg-[#111111] p-7"
             >
-              <span style={{
-                fontFamily:    "'DM Mono', monospace",
-                fontSize:      '0.58rem',
-                color:         'rgba(255,255,255,0.18)',
-                letterSpacing: '0.06em',
-                flexShrink:    0,
-                width:         22,
-                paddingTop:    2,
-              }}>
-                {step.num}
-              </span>
-              <span style={{
-                fontFamily: "'Outfit', sans-serif",
-                fontSize:   '0.9rem',
-                color:      'rgba(255,255,255,0.68)',
-                flex:       1,
-                fontWeight: 400,
-                lineHeight: 1.4,
-              }}>
-                {step.action}
-              </span>
-              <span style={{
-                fontFamily:    "'DM Mono', monospace",
-                fontSize:      '0.62rem',
-                color:         'rgba(255,255,255,0.22)',
-                letterSpacing: '0.04em',
-                flexShrink:    0,
-                textAlign:     'right',
-                maxWidth:      160,
-              }}>
-                {step.tool}
-              </span>
+              <p className="font-['DM_Mono'] text-[0.62rem] uppercase tracking-[0.18em] text-white/24">
+                {era.label}
+              </p>
+              <div className="my-10 h-px w-full bg-white/8" />
+              <h3 className="max-w-xs font-['Cormorant_Garamond'] text-3xl font-bold leading-tight text-white">
+                {era.title}
+              </h3>
+              <p className="mt-5 font-['Outfit'] text-sm font-light leading-6 text-white/42">{era.detail}</p>
             </motion.div>
           ))}
         </motion.div>
+      </div>
+    </section>
 
-        {/* Right: editorial closing copy */}
+    <section className="relative bg-[#111111]/92 px-6 py-24 sm:py-32">
+      <div className="mx-auto max-w-6xl">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-40px' }}
-          transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          style={{ paddingTop: '3rem' }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ staggerChildren: 0.14 }}
         >
-          {/* Stat callout */}
-          <div style={{
-            background:    'rgba(17,17,17,0.9)',
-            border:        '1px solid rgba(255,255,255,0.08)',
-            borderRadius:  '0.75rem',
-            padding:       '1.75rem 2rem',
-            marginBottom:  '2.5rem',
-          }}>
-            <div style={{
-              fontFamily:    "'Cormorant Garamond', serif",
-              fontSize:      '3.2rem',
-              fontWeight:    700,
-              color:         '#ffffff',
-              lineHeight:    1,
-              marginBottom:  '0.5rem',
-            }}>
-              6
-            </div>
-            <div style={{
-              fontFamily: "'Outfit', sans-serif",
-              fontSize:   '0.88rem',
-              color:      'rgba(255,255,255,0.42)',
-              lineHeight: 1.6,
-              fontWeight: 300,
-            }}>
-              The average number of apps a brand uses to manage one influencer campaign.
-              Before a single post goes live.
-            </div>
+          <motion.div variants={fadeUp} className="mb-16 max-w-3xl">
+            <p className="mb-5 font-['DM_Mono'] text-[0.68rem] uppercase tracking-[0.18em] text-white/30">
+              Two different problems
+            </p>
+            <h2 className="font-['Cormorant_Garamond'] text-5xl font-bold leading-none text-white sm:text-6xl">
+              Brands and creators are trying to meet, but the work gets messy in the middle.
+            </h2>
+          </motion.div>
+
+          <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
+            <ProblemList title="Brand problems" items={brandProblems} />
+            <ProblemList title="Creator problems" items={creatorProblems} align="right" />
           </div>
 
-          {/* Divider + closing */}
-          <div style={{
-            borderLeft:  '2px solid #6A0D7D',
-            paddingLeft: '1.5rem',
-          }}>
-            <p style={{
-              fontFamily:    "'Cormorant Garamond', serif",
-              fontSize:      'clamp(1.4rem, 2vw, 1.75rem)',
-              fontWeight:    600,
-              color:         '#ffffff',
-              lineHeight:    1.3,
-              marginBottom:  '0.9rem',
-            }}>
-              Influnite brings it into one workspace.
+          <motion.div
+            variants={fadeUp}
+            className="mt-20 border-l-2 border-[#6A0D7D] pl-6"
+          >
+            <p className="font-['Cormorant_Garamond'] text-4xl font-bold leading-tight text-white sm:text-5xl">
+              Different problems.
+              <br />
+              <span className="text-white/45">One platform.</span>
             </p>
-            <p style={{
-              fontFamily: "'Outfit', sans-serif",
-              fontSize:   '0.88rem',
-              color:      'rgba(255,255,255,0.38)',
-              lineHeight: 1.7,
-              fontWeight: 300,
-            }}>
-              Discovery, briefing, contracts, content approval, and payments — handled in one place,
-              with a clear record of everything.
-            </p>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
-    </div>
-
-    <style>{`
-      @media (max-width: 800px) {
-        .chaos-grid { grid-template-columns: 1fr !important; gap: 3rem !important; }
-      }
-    `}</style>
-  </section>
+    </section>
+  </>
 )
 
 export default ChaosSection

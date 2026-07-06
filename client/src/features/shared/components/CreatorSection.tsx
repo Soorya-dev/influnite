@@ -145,7 +145,7 @@ const CreatorUI: React.FC = () => (
     </div>
 
     {/* Campaign cards */}
-    {CAMPAIGNS.map((c, i) => (
+    {CAMPAIGNS.map((c) => (
       <div key={c.brand} style={{
         padding:      '0.75rem 1rem',
         borderTop:    '1px solid rgba(255,255,255,0.05)',

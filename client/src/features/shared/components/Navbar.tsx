@@ -45,7 +45,7 @@ const NAVBAR_STYLES = `
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, #7c3aed, #6366f1);
+    background: #6A0D7D;
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
@@ -75,10 +75,10 @@ const NAVBAR_STYLES = `
 `;
 
 const NAV_LINKS = [
-  { label: "Features",     href: "#features" },
+  { label: "Why now",      href: "#why-influnite" },
   { label: "How It Works", href: "#how-it-works" },
-  { label: "Pricing",      href: "#pricing" },
-  { label: "Creators",     href: "#creators" },
+  { label: "Platform",     href: "#dashboard" },
+  { label: "Trust",        href: "#trust" },
 ];
 
 const Navbar: React.FC = () => {
@@ -106,12 +106,12 @@ const Navbar: React.FC = () => {
   }, []);
 
   const navBg = scrolled
-    ? "rgba(8,5,20,0.88)"
-    : "rgba(8,5,20,0.0)";
+    ? "rgba(8,8,8,0.92)"
+    : "rgba(8,8,8,0.0)";
 
   const navBorder = scrolled
-    ? "rgba(124,58,237,0.18)"
-    : "rgba(124,58,237,0.0)";
+    ? "rgba(255,255,255,0.08)"
+    : "rgba(255,255,255,0.0)";
 
   return (
     <header
@@ -123,7 +123,7 @@ const Navbar: React.FC = () => {
         right:           0,
         zIndex:          50,
         background:      navBg,
-        backdropFilter:  scrolled ? "blur(20px) saturate(180%)" : "none",
+        backdropFilter:  scrolled ? "blur(14px)" : "none",
         borderBottom:    `1px solid ${navBorder}`,
         transition:      "background 0.4s cubic-bezier(0.22,1,0.36,1), border-color 0.4s cubic-bezier(0.22,1,0.36,1), backdrop-filter 0.4s",
         boxShadow:       scrolled ? "0 4px 32px rgba(0,0,0,0.4)" : "none",
@@ -153,10 +153,7 @@ const Navbar: React.FC = () => {
               fontSize:        "1.65rem",
               fontWeight:      700,
               letterSpacing:   "-0.02em",
-              background:      "linear-gradient(135deg, #a78bfa 0%, #7c3aed 45%, #6366f1 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
+              color:           "#ffffff",
             }}
           >
             Influnite
@@ -248,7 +245,7 @@ const Navbar: React.FC = () => {
               padding:       "0.55rem 1.4rem",
               borderRadius:  999,
               border:        "none",
-              background:    "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
+              background:    "#6A0D7D",
               color:         "#fff",
               cursor:        "pointer",
               letterSpacing: "0.025em",
@@ -296,9 +293,9 @@ const Navbar: React.FC = () => {
         <div
           className="mobile-menu"
           style={{
-            background:    "rgba(8,5,20,0.96)",
-            backdropFilter:"blur(24px)",
-            borderTop:     "1px solid rgba(124,58,237,0.15)",
+            background:    "rgba(8,8,8,0.98)",
+            backdropFilter:"blur(14px)",
+            borderTop:     "1px solid rgba(255,255,255,0.08)",
             padding:       "1.5rem 2rem 2rem",
           }}
         >
@@ -347,7 +344,7 @@ const Navbar: React.FC = () => {
                 padding:     "0.75rem",
                 borderRadius:999,
                 border:      "none",
-                background:  "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
+                background:  "#6A0D7D",
                 color:       "#fff",
                 cursor:      "pointer",
                 boxShadow:   "0 0 0 1px rgba(124,58,237,0.4), 0 6px 20px rgba(79,46,220,0.4)",

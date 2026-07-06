@@ -1,513 +1,218 @@
-// DashboardSection.tsx — Brand dashboard preview
-// Full-width realistic dashboard wrapped in browser chrome
-// Shows the actual product, not a marketing description
-// Answers: "What will I gain?"
+import React, { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 
-import React from 'react'
-import { motion } from 'framer-motion'
+type Tab = 'brand' | 'creator'
 
-// ─── Bar chart data ───────────────────────────────────────────────────────────
-const CHART_DATA = [
-  { week: 'W1', reach: 58, eng: 34 },
-  { week: 'W2', reach: 74, eng: 50 },
-  { week: 'W3', reach: 66, eng: 44 },
-  { week: 'W4', reach: 88, eng: 62 },
-  { week: 'W5', reach: 80, eng: 68 },
-  { week: 'W6', reach: 94, eng: 76 },
-  { week: 'W7', reach: 84, eng: 63 },
-  { week: 'W8', reach: 100, eng: 84 },
+const brandRows = [
+  ['Summer Glow', '18 proposals', 'Reviewing'],
+  ['Coffee Launch', '7 creators', 'Content due'],
+  ['Festive Drop', 'INR 2.5L', 'Brief open'],
 ]
 
-const CHART_H   = 120
-const BAR_W     = 18
-const BAR_GAP   = 14
-const STEP_W    = BAR_W + BAR_GAP
-
-const BarChart: React.FC = () => (
-  <svg
-    viewBox={`0 0 ${STEP_W * 8 + 4} ${CHART_H + 28}`}
-    style={{ width: '100%', display: 'block' }}
-  >
-    {CHART_DATA.map((d, i) => {
-      const x   = i * STEP_W + 2
-      const rH  = (d.reach / 100) * CHART_H
-      const eH  = (d.eng   / 100) * CHART_H
-      return (
-        <g key={d.week}>
-          {/* Reach bar */}
-          <rect
-            x={x} y={CHART_H - rH} width={BAR_W} height={rH}
-            fill="rgba(255,255,255,0.07)" rx={3}
-          />
-          {/* Engagement bar */}
-          <rect
-            x={x} y={CHART_H - eH} width={BAR_W} height={eH}
-            fill="rgba(106,13,125,0.55)" rx={3}
-          />
-          <text
-            x={x + BAR_W / 2} y={CHART_H + 18}
-            textAnchor="middle"
-            fill="rgba(255,255,255,0.2)"
-            fontSize={8}
-            fontFamily="DM Mono, monospace"
-          >
-            {d.week}
-          </text>
-        </g>
-      )
-    })}
-  </svg>
-)
-
-// ─── Sidebar nav ──────────────────────────────────────────────────────────────
-const NAV_ITEMS = ['Campaigns', 'Creators', 'Messages', 'Payments', 'Analytics', 'Settings']
-
-const Sidebar: React.FC = () => (
-  <div style={{
-    width:         168,
-    flexShrink:    0,
-    borderRight:   '1px solid rgba(255,255,255,0.07)',
-    background:    'rgba(10,10,10,0.6)',
-    display:       'flex',
-    flexDirection: 'column',
-    padding:       '1rem 0',
-  }}>
-    {/* Logo */}
-    <div style={{
-      padding:       '0 1rem 1rem',
-      borderBottom:  '1px solid rgba(255,255,255,0.06)',
-      marginBottom:  '0.75rem',
-    }}>
-      <span style={{
-        fontFamily:    "'Cormorant Garamond', serif",
-        fontSize:      '1rem',
-        fontWeight:    700,
-        background:    'linear-gradient(135deg, #a78bfa 0%, #6A0D7D 100%)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        backgroundClip: 'text',
-      }}>
-        Influnite
-      </span>
-    </div>
-
-    {NAV_ITEMS.map((item, i) => (
-      <div key={item} style={{
-        padding:         '0.45rem 1rem',
-        margin:          '0 0.5rem',
-        borderRadius:    6,
-        background:      i === 0 ? 'rgba(106,13,125,0.2)' : 'transparent',
-        display:         'flex',
-        alignItems:      'center',
-        gap:             '0.5rem',
-        cursor:          'default',
-        marginBottom:    2,
-      }}>
-        <div style={{
-          width: 5, height: 5, borderRadius: '50%',
-          background: i === 0 ? '#6A0D7D' : 'rgba(255,255,255,0.2)',
-          flexShrink: 0,
-        }} />
-        <span style={{
-          fontFamily:    "'Outfit', sans-serif",
-          fontSize:      '0.75rem',
-          color:         i === 0 ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.35)',
-          fontWeight:    i === 0 ? 500 : 400,
-        }}>
-          {item}
-        </span>
-      </div>
-    ))}
-
-    {/* User profile */}
-    <div style={{ marginTop: 'auto', padding: '0.75rem 1rem', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <div style={{
-          width: 26, height: 26, borderRadius: '50%',
-          background: 'rgba(106,13,125,0.4)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontFamily: "'Outfit', sans-serif", fontSize: '0.58rem', color: 'rgba(255,255,255,0.7)', fontWeight: 600,
-        }}>MA</div>
-        <div>
-          <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)' }}>
-            Meera Arora
-          </div>
-          <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.55rem', color: 'rgba(255,255,255,0.25)', marginTop: 1 }}>
-            Admin
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-)
-
-// ─── Stat card ────────────────────────────────────────────────────────────────
-const StatCard: React.FC<{ label: string; value: string; sub?: string; accent?: boolean }> = ({
-  label, value, sub, accent,
-}) => (
-  <div style={{
-    background:   '#111111',
-    border:       `1px solid ${accent ? 'rgba(106,13,125,0.3)' : 'rgba(255,255,255,0.07)'}`,
-    borderRadius: 8,
-    padding:      '0.85rem 1rem',
-    flex:         1,
-    minWidth:     0,
-  }}>
-    <div style={{
-      fontFamily:    "'DM Mono', monospace",
-      fontSize:      '0.58rem',
-      color:         'rgba(255,255,255,0.3)',
-      letterSpacing: '0.08em',
-      textTransform: 'uppercase',
-      marginBottom:  6,
-    }}>
-      {label}
-    </div>
-    <div style={{
-      fontFamily: "'Outfit', sans-serif",
-      fontSize:   '1.4rem',
-      fontWeight: 600,
-      color:      accent ? 'rgba(167,139,250,0.9)' : '#ffffff',
-      lineHeight: 1,
-      marginBottom: sub ? 4 : 0,
-    }}>
-      {value}
-    </div>
-    {sub && (
-      <div style={{
-        fontFamily: "'DM Mono', monospace",
-        fontSize:   '0.58rem',
-        color:      'rgba(255,255,255,0.22)',
-        marginTop:  2,
-      }}>
-        {sub}
-      </div>
-    )}
-  </div>
-)
-
-// ─── Campaigns table ──────────────────────────────────────────────────────────
-const CAMPAIGNS = [
-  { name: 'Summer Glow 2025',   creators: 8,  budget: '₹45,000',   status: 'Active',    color: '#6ee7b7'   },
-  { name: 'Brand Launch — Q3',  creators: 3,  budget: '₹1,20,000', status: 'In Review', color: '#fbbf24'   },
-  { name: 'Festive Push 2025',  creators: 12, budget: '₹2,50,000', status: 'Planning',  color: 'rgba(255,255,255,0.3)' },
+const creatorRows = [
+  ['Nourish Organics', 'INR 18K-25K', 'Apply'],
+  ['Pureblend Coffee', 'INR 8K-12K', 'Shortlisted'],
+  ['Arya Skincare', 'INR 30K', 'In escrow'],
 ]
 
-const CampaignsTable: React.FC = () => (
-  <div>
-    {/* Table header */}
-    <div style={{
-      display:       'grid',
-      gridTemplateColumns: '1fr 80px 100px 90px',
-      padding:       '0.4rem 0.75rem',
-      borderBottom:  '1px solid rgba(255,255,255,0.06)',
-    }}>
-      {['Campaign', 'Creators', 'Budget', 'Status'].map(h => (
-        <span key={h} style={{
-          fontFamily:    "'DM Mono', monospace",
-          fontSize:      '0.55rem',
-          color:         'rgba(255,255,255,0.22)',
-          letterSpacing: '0.08em',
-          textTransform: 'uppercase',
-        }}>
-          {h}
-        </span>
+const tabs: { id: Tab; label: string }[] = [
+  { id: 'brand', label: 'Brand Dashboard' },
+  { id: 'creator', label: 'Creator Dashboard' },
+]
+
+const BrowserShell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div className="overflow-hidden border border-white/10 bg-[#080808] shadow-[0_34px_90px_rgba(0,0,0,0.65)]">
+    <div className="flex h-11 items-center gap-2 border-b border-white/8 bg-[#161616] px-4">
+      {['#ff5f57', '#ffbd2e', '#28c840'].map((color) => (
+        <span key={color} className="h-2.5 w-2.5 rounded-full opacity-80" style={{ backgroundColor: color }} />
       ))}
+      <div className="mx-auto hidden rounded-full border border-white/8 bg-white/[0.03] px-8 py-1 font-['DM_Mono'] text-[0.58rem] tracking-[0.08em] text-white/25 sm:block">
+        app.influnite.io
+      </div>
     </div>
-    {CAMPAIGNS.map((c, i) => (
-      <div key={c.name} style={{
-        display:             'grid',
-        gridTemplateColumns: '1fr 80px 100px 90px',
-        padding:             '0.6rem 0.75rem',
-        borderBottom:        i < 2 ? '1px solid rgba(255,255,255,0.04)' : 'none',
-        alignItems:          'center',
-      }}>
-        <span style={{
-          fontFamily: "'Outfit', sans-serif",
-          fontSize:   '0.8rem',
-          color:      'rgba(255,255,255,0.7)',
-          fontWeight: 400,
-        }}>{c.name}</span>
-        <span style={{
-          fontFamily: "'DM Mono', monospace",
-          fontSize:   '0.7rem',
-          color:      'rgba(255,255,255,0.35)',
-        }}>{c.creators}</span>
-        <span style={{
-          fontFamily:    "'DM Mono', monospace",
-          fontSize:      '0.72rem',
-          color:         'rgba(255,255,255,0.5)',
-          letterSpacing: '0.02em',
-        }}>{c.budget}</span>
-        <span style={{
-          fontFamily:    "'DM Mono', monospace",
-          fontSize:      '0.6rem',
-          color:         c.color,
-          letterSpacing: '0.06em',
-        }}>{c.status}</span>
-      </div>
-    ))}
+    {children}
   </div>
 )
 
-// ─── Needs attention panel ────────────────────────────────────────────────────
-const ATTENTION = [
-  { label: 'Content waiting for review', count: 3, color: '#fbbf24' },
-  { label: 'Escrow ready to release',    count: 1, color: '#6ee7b7' },
-  { label: 'Contracts pending sign',     count: 2, color: 'rgba(167,139,250,0.8)' },
-]
-
-const AttentionPanel: React.FC = () => (
-  <div>
-    {ATTENTION.map((a, i) => (
-      <div key={a.label} style={{
-        display:       'flex',
-        alignItems:    'center',
-        gap:           '0.65rem',
-        padding:       '0.6rem 0',
-        borderBottom:  i < 2 ? '1px solid rgba(255,255,255,0.05)' : 'none',
-      }}>
-        <div style={{
-          width:         28,
-          height:        28,
-          borderRadius:  6,
-          background:    `${a.color}1a`,
-          border:        `1px solid ${a.color}33`,
-          display:       'flex',
-          alignItems:    'center',
-          justifyContent:'center',
-          flexShrink:    0,
-          fontFamily:    "'DM Mono', monospace",
-          fontSize:      '0.7rem',
-          color:         a.color,
-        }}>
-          {a.count}
-        </div>
-        <span style={{
-          fontFamily: "'Outfit', sans-serif",
-          fontSize:   '0.78rem',
-          color:      'rgba(255,255,255,0.45)',
-          lineHeight: 1.35,
-        }}>
-          {a.label}
-        </span>
-      </div>
-    ))}
+const Metric: React.FC<{ label: string; value: string; active?: boolean }> = ({ label, value, active }) => (
+  <div className={`border p-4 ${active ? 'border-[#6A0D7D]/35 bg-[#6A0D7D]/10' : 'border-white/8 bg-[#111111]'}`}>
+    <p className="font-['DM_Mono'] text-[0.58rem] uppercase tracking-[0.14em] text-white/28">{label}</p>
+    <p className="mt-3 font-['Outfit'] text-2xl font-semibold text-white">{value}</p>
   </div>
 )
 
-// ─── Main component ───────────────────────────────────────────────────────────
-const DashboardSection: React.FC = () => (
-  <section
-    id="dashboard"
-    style={{
-      padding:   '7rem 2rem 8rem',
-      boxSizing: 'border-box',
-    }}
-  >
-    <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-
-      {/* Section header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-60px' }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        style={{ marginBottom: '3rem', maxWidth: 580 }}
-      >
-        <span style={{
-          fontFamily:    "'DM Mono', monospace",
-          fontSize:      '0.62rem',
-          color:         'rgba(255,255,255,0.25)',
-          letterSpacing: '0.14em',
-          textTransform: 'uppercase',
-          display:       'block',
-          marginBottom:  '1.25rem',
-        }}>
-          Brand Dashboard
-        </span>
-        <h2 style={{
-          fontFamily:    "'Cormorant Garamond', serif",
-          fontSize:      'clamp(2rem, 3.2vw, 3.2rem)',
-          fontWeight:    700,
-          color:         '#ffffff',
-          lineHeight:    1.1,
-          letterSpacing: '-0.02em',
-          marginBottom:  '0.9rem',
-        }}>
-          Your campaigns, your creators,<br />
-          <em style={{ fontStyle: 'italic', color: 'rgba(255,255,255,0.42)' }}>
-            your budget — in one view.
-          </em>
-        </h2>
-        <p style={{
-          fontFamily: "'Outfit', sans-serif",
-          fontSize:   '0.95rem',
-          color:      'rgba(255,255,255,0.38)',
-          lineHeight: 1.7,
-          fontWeight: 300,
-        }}>
-          No exports. No status meetings. Everything your team needs to run campaigns is visible from the moment you log in.
-        </p>
-      </motion.div>
-
-      {/* Dashboard preview */}
-      <motion.div
-        initial={{ opacity: 0, y: 32 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-60px' }}
-        transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {/* Browser chrome */}
-        <div style={{
-          borderRadius: '1rem',
-          overflow:     'hidden',
-          border:       '1px solid rgba(255,255,255,0.1)',
-          boxShadow:    '0 40px 100px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.05)',
-        }}>
-          {/* Top chrome bar */}
-          <div style={{
-            height:      40,
-            background:  '#1a1a1a',
-            borderBottom:'1px solid rgba(255,255,255,0.07)',
-            display:     'flex',
-            alignItems:  'center',
-            padding:     '0 1rem',
-            gap:         '0.5rem',
-          }}>
-            {['#FF5F57','#FFBD2E','#28C840'].map(c => (
-              <span key={c} style={{
-                width: 10, height: 10, borderRadius: '50%',
-                background: c, opacity: 0.8, flexShrink: 0,
-              }} />
-            ))}
-            <div style={{
-              flex:          1,
-              display:       'flex',
-              justifyContent:'center',
-            }}>
-              <div style={{
-                background:    'rgba(255,255,255,0.05)',
-                border:        '1px solid rgba(255,255,255,0.08)',
-                borderRadius:  999,
-                padding:       '3px 20px',
-                fontFamily:    "'DM Mono', monospace",
-                fontSize:      '0.6rem',
-                color:         'rgba(255,255,255,0.25)',
-                letterSpacing: '0.04em',
-              }}>
-                app.influnite.io/dashboard
-              </div>
-            </div>
+const BrandDashboard = () => (
+  <div className="grid min-h-[520px] bg-[#0b0b0b] lg:grid-cols-[190px_1fr]">
+    <aside className="hidden border-r border-white/8 bg-[#111111] p-5 lg:block">
+      <p className="font-['Cormorant_Garamond'] text-2xl font-bold text-white">Influnite</p>
+      <div className="mt-8 space-y-2">
+        {['Campaigns', 'Creators', 'Approvals', 'Payments'].map((item, index) => (
+          <div key={item} className={`px-3 py-2 font-['Outfit'] text-sm ${index === 0 ? 'bg-[#6A0D7D]/16 text-white' : 'text-white/36'}`}>
+            {item}
           </div>
+        ))}
+      </div>
+    </aside>
+    <main className="p-5 sm:p-7">
+      <div className="flex flex-col gap-5 border-b border-white/8 pb-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="font-['DM_Mono'] text-[0.6rem] uppercase tracking-[0.16em] text-white/28">Brand workspace</p>
+          <h3 className="mt-2 font-['Outfit'] text-2xl font-semibold text-white">Good morning, Meera.</h3>
+        </div>
+        <button className="w-fit rounded-full bg-[#6A0D7D] px-5 py-2.5 font-['Outfit'] text-sm font-semibold text-white shadow-[0_0_28px_rgba(106,13,125,0.25)]">
+          New Campaign
+        </button>
+      </div>
 
-          {/* Dashboard body */}
-          <div style={{ display: 'flex', height: 460, background: '#0d0d0d' }}>
-            <Sidebar />
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <Metric label="Active campaigns" value="12" />
+        <Metric label="Creators hired" value="47" />
+        <Metric label="In escrow" value="INR 2.4L" active />
+      </div>
 
-            {/* Main content */}
-            <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-              {/* Greeting bar */}
-              <div style={{
-                padding:       '0.85rem 1.25rem',
-                borderBottom:  '1px solid rgba(255,255,255,0.06)',
-                display:       'flex',
-                alignItems:    'center',
-                justifyContent:'space-between',
-              }}>
+      <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_260px]">
+        <div className="border border-white/8 bg-[#111111] p-5">
+          <p className="font-['DM_Mono'] text-[0.6rem] uppercase tracking-[0.14em] text-white/28">Campaign pipeline</p>
+          <div className="mt-6 space-y-3">
+            {brandRows.map(([name, meta, status]) => (
+              <div key={name} className="grid grid-cols-[1fr_auto] gap-4 border-b border-white/6 pb-3 last:border-0">
                 <div>
-                  <div style={{ fontFamily: "'Outfit', sans-serif", fontSize: '0.88rem', color: '#fff', fontWeight: 500 }}>
-                    Good morning, Meera.
-                  </div>
-                  <div style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.58rem', color: 'rgba(255,255,255,0.25)', marginTop: 2 }}>
-                    Monday, 7 July 2025 · 3 items need your attention
-                  </div>
+                  <p className="font-['Outfit'] text-base text-white/82">{name}</p>
+                  <p className="font-['DM_Mono'] text-[0.6rem] text-white/30">{meta}</p>
                 </div>
-                <div style={{
-                  fontFamily:    "'Outfit', sans-serif",
-                  fontSize:      '0.75rem',
-                  fontWeight:    600,
-                  padding:       '0.38rem 0.9rem',
-                  borderRadius:  999,
-                  border:        'none',
-                  background:    '#6A0D7D',
-                  color:         '#fff',
-                  cursor:        'default',
-                }}>
-                  + New Campaign
-                </div>
+                <p className="font-['DM_Mono'] text-[0.62rem] text-[#b567c5]">{status}</p>
               </div>
+            ))}
+          </div>
+        </div>
 
-              {/* Scroll content */}
-              <div style={{ flex: 1, overflow: 'auto', padding: '1rem 1.25rem' }}>
-                {/* Stat cards */}
-                <div style={{ display: 'flex', gap: '0.65rem', marginBottom: '1rem' }}>
-                  <StatCard label="Active Campaigns"  value="12" />
-                  <StatCard label="Creators Working"  value="47"   sub="+8 this month" />
-                  <StatCard label="Budget Used"       value="₹2.4L" sub="of ₹5L total" accent />
-                  <StatCard label="Pending Reviews"   value="3" />
-                </div>
-
-                {/* Middle row: chart + attention */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 200px', gap: '0.65rem', marginBottom: '1rem' }}>
-                  {/* Chart panel */}
-                  <div style={{
-                    background:   '#111111',
-                    border:       '1px solid rgba(255,255,255,0.07)',
-                    borderRadius: 8,
-                    padding:      '0.75rem 0.85rem',
-                  }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                      <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.6rem', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.06em' }}>
-                        CAMPAIGN PERFORMANCE
-                      </span>
-                      <div style={{ display: 'flex', gap: '0.75rem' }}>
-                        {[{ label: 'Reach', color: 'rgba(255,255,255,0.3)' }, { label: 'Engagement', color: 'rgba(106,13,125,0.8)' }].map(l => (
-                          <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                            <div style={{ width: 8, height: 8, borderRadius: 2, background: l.color }} />
-                            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.55rem', color: 'rgba(255,255,255,0.25)' }}>
-                              {l.label}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <BarChart />
-                  </div>
-
-                  {/* Needs attention panel */}
-                  <div style={{
-                    background:   '#111111',
-                    border:       '1px solid rgba(255,255,255,0.07)',
-                    borderRadius: 8,
-                    padding:      '0.75rem 0.85rem',
-                  }}>
-                    <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '0.6rem', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.06em', display: 'block', marginBottom: '0.5rem' }}>
-                      NEEDS ATTENTION
-                    </span>
-                    <AttentionPanel />
-                  </div>
-                </div>
-
-                {/* Recent campaigns table */}
-                <div style={{
-                  background:   '#111111',
-                  border:       '1px solid rgba(255,255,255,0.07)',
-                  borderRadius: 8,
-                  padding:      '0.75rem 0',
-                }}>
-                  <div style={{ padding: '0 0.75rem 0.5rem', fontFamily: "'DM Mono', monospace", fontSize: '0.6rem', color: 'rgba(255,255,255,0.3)', letterSpacing: '0.06em' }}>
-                    RECENT CAMPAIGNS
-                  </div>
-                  <CampaignsTable />
-                </div>
-              </div>
+        <div className="border border-white/8 bg-[#111111] p-5">
+          <p className="font-['DM_Mono'] text-[0.6rem] uppercase tracking-[0.14em] text-white/28">Needs approval</p>
+          <div className="mt-6 aspect-[4/5] bg-[#161616] p-4">
+            <div className="h-full border border-white/8 bg-[#0d0d0d] p-4">
+              <div className="h-44 bg-white/[0.04]" />
+              <p className="mt-4 font-['Outfit'] text-sm text-white/70">Reel draft from Priya</p>
+              <p className="mt-2 font-['Outfit'] text-xs leading-5 text-white/36">Caption, brand mention, and product angle are waiting for review.</p>
             </div>
           </div>
         </div>
-      </motion.div>
-    </div>
-  </section>
+      </div>
+    </main>
+  </div>
 )
+
+const CreatorDashboard = () => (
+  <div className="grid min-h-[520px] bg-[#0b0b0b] lg:grid-cols-[1fr_300px]">
+    <main className="p-5 sm:p-7">
+      <div className="border-b border-white/8 pb-6">
+        <p className="font-['DM_Mono'] text-[0.6rem] uppercase tracking-[0.16em] text-white/28">Creator workspace</p>
+        <h3 className="mt-2 font-['Outfit'] text-2xl font-semibold text-white">Campaigns that fit your audience.</h3>
+      </div>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <Metric label="Available" value="31" />
+        <Metric label="Applications" value="8" />
+        <Metric label="In escrow" value="INR 48K" active />
+      </div>
+
+      <div className="mt-6 border border-white/8 bg-[#111111] p-5">
+        <p className="font-['DM_Mono'] text-[0.6rem] uppercase tracking-[0.14em] text-white/28">Campaign feed</p>
+        <div className="mt-6 space-y-3">
+          {creatorRows.map(([brand, budget, status], index) => (
+            <div key={brand} className="grid grid-cols-[38px_1fr_auto] items-center gap-4 border-b border-white/6 pb-3 last:border-0">
+              <div className="flex h-9 w-9 items-center justify-center bg-[#161616] font-['Outfit'] text-sm font-semibold text-white/70 ring-1 ring-white/8">
+                {brand[0]}
+              </div>
+              <div>
+                <p className="font-['Outfit'] text-base text-white/82">{brand}</p>
+                <p className="font-['DM_Mono'] text-[0.6rem] text-white/30">{budget}</p>
+              </div>
+              <span className={`rounded-full px-3 py-1 font-['DM_Mono'] text-[0.58rem] ${index === 0 ? 'bg-[#6A0D7D] text-white' : 'border border-white/10 text-white/45'}`}>
+                {status}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
+
+    <aside className="border-t border-white/8 bg-[#111111] p-5 lg:border-l lg:border-t-0">
+      <p className="font-['DM_Mono'] text-[0.6rem] uppercase tracking-[0.14em] text-white/28">Credibility profile</p>
+      <div className="mt-6 flex items-center gap-4">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#161616] font-['Outfit'] text-lg font-semibold text-white ring-1 ring-white/10">
+          KD
+        </div>
+        <div>
+          <p className="font-['Outfit'] text-lg font-medium text-white">Karan Dev</p>
+          <p className="font-['DM_Mono'] text-[0.6rem] text-white/30">Food and lifestyle</p>
+        </div>
+      </div>
+      <div className="mt-8 space-y-4">
+        {['Verified audience', 'Portfolio complete', '3 payments completed'].map((item) => (
+          <div key={item} className="border-l-2 border-[#6A0D7D] bg-[#161616] px-4 py-3 font-['Outfit'] text-sm text-white/68">
+            {item}
+          </div>
+        ))}
+      </div>
+    </aside>
+  </div>
+)
+
+const DashboardSection: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<Tab>('brand')
+
+  return (
+    <section id="dashboard" className="relative bg-[#111111]/92 px-6 py-24 sm:py-32">
+      <div className="mx-auto max-w-6xl">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-10 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end"
+        >
+          <div className="max-w-3xl">
+            <p className="mb-5 font-['DM_Mono'] text-[0.68rem] uppercase tracking-[0.18em] text-white/30">
+              Explore the platform
+            </p>
+            <h2 className="font-['Cormorant_Garamond'] text-5xl font-bold leading-none text-white sm:text-6xl">
+              One marketplace. Two workspaces.
+            </h2>
+          </div>
+
+          <div className="flex w-full gap-2 border border-white/10 bg-[#080808] p-1 sm:w-fit">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 px-4 py-2.5 font-['Outfit'] text-sm font-medium transition sm:flex-none ${
+                  activeTab === tab.id
+                    ? 'bg-[#6A0D7D] text-white shadow-[0_0_24px_rgba(106,13,125,0.25)]'
+                    : 'text-white/48 hover:bg-[#161616] hover:text-white'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+
+        <BrowserShell>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.25 }}
+            >
+              {activeTab === 'brand' ? <BrandDashboard /> : <CreatorDashboard />}
+            </motion.div>
+          </AnimatePresence>
+        </BrowserShell>
+      </div>
+    </section>
+  )
+}
 
 export default DashboardSection
