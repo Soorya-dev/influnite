@@ -1,10 +1,7 @@
-import mongoose,{Schema,Document} from "mongoose";
+import mongoose, { Schema, Document } from 'mongoose';
+import { InfluencerEntity } from '../entities/influencer.entity';
 
-import { IInfluencer } from "../entities/Influencer.entity";
-
-
-
-const InfluencerSchema = new Schema<IInfluencer>(
+const InfluencerSchema = new Schema<InfluencerEntity>(
   {
     name: { type: String, required: true },
 
@@ -15,15 +12,14 @@ const InfluencerSchema = new Schema<IInfluencer>(
     phone: String,
     city: String,
     state: String,
-    country: { type: String, default: "India" },
+    country: { type: String, default: 'India' },
 
     bio: String,
     profilePictureUrl: String,
 
     niche: {
       type: String,
-      required: true,
-      enum: ["Fashion", "Tech", "Food", "Travel", "Fitness", "Beauty", "Gaming"]
+      enum: ['Fashion', 'Tech', 'Food', 'Travel', 'Fitness', 'Beauty', 'Gaming'],
     },
 
     secondaryNiches: [String],
@@ -47,8 +43,8 @@ const InfluencerSchema = new Schema<IInfluencer>(
 
     status: {
       type: String,
-      enum: ["active", "blocked", "pending", "suspended"],
-      default: "pending"
+      enum: ['active', 'blocked', 'pending', 'suspended'],
+      default: 'pending',
     },
 
     lastLoginAt: Date,
@@ -56,12 +52,12 @@ const InfluencerSchema = new Schema<IInfluencer>(
     geolocation: {
       type: {
         type: String,
-        enum: ["Point"],
-        default: "Point"
+        enum: ['Point'],
+        default: 'Point',
       },
       coordinates: {
-        type: [Number] // [longitude, latitude]
-      }
+        type: [Number], // [longitude, latitude]
+      },
     },
 
     bankAccountNumber: String, // encrypted
@@ -77,11 +73,11 @@ const InfluencerSchema = new Schema<IInfluencer>(
     responseRate: { type: Number, default: 0 },
     completionRate: { type: Number, default: 0 },
 
-    profileCompletionPercentage: { type: Number, default: 0 }
+    profileCompletionPercentage: { type: Number, default: 0 },
   },
   {
-    timestamps: { createdAt: "createdAt", updatedAt: "updatedAt" }
-  }
+    timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
+  },
 );
 
-export const Influencer = mongoose.model<IInfluencer  >('Influencer',InfluencerSchema);
+export const Influencer = mongoose.model<InfluencerEntity>('Influencer', InfluencerSchema);

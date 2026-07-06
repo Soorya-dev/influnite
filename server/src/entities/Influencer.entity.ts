@@ -1,7 +1,8 @@
-import { Types } from "mongoose";
+// server\src\entities\influencer.entity.ts
+import type { Types } from 'mongoose';
 
-export interface IInfluencer {
-  _id? : Types.ObjectId;
+export interface InfluencerEntity {
+  _id: Types.ObjectId;
   name: string;
   email: string;
   password: string;
@@ -24,10 +25,10 @@ export interface IInfluencer {
   phoneVerified: boolean;
   resetToken?: string;
   resetExpires?: Date;
-  status: "active" | "blocked" | "pending" | "suspended";
+  status: 'active' | 'blocked' | 'pending' | 'suspended';
   lastLoginAt?: Date;
   geolocation?: {
-    type: "Point";
+    type: 'Point';
     coordinates: [number, number];
   };
   bankAccountNumber?: string; // store encrypted
@@ -43,4 +44,3 @@ export interface IInfluencer {
   createdAt: Date;
   updatedAt: Date;
 }
-

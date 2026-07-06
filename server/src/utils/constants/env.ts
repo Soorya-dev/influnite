@@ -1,12 +1,31 @@
-const getEnv = (key:string,defaultValue?:string):string =>{
-    const value  = process.env[key]||defaultValue
-    if(value === undefined){
-        throw new Error(`Missing environment variable${key}`)
-    }
+//server\src\utils\constants\env.ts
 
-    return value
+// src/utils/constants/env.ts
+export function getEnv(key: string, defaultValue?: string): string {
+  const value = process.env[key] ?? defaultValue;
+  if (value === undefined) {
+    throw new Error(`❌ Missing environment variable: ${key}`);
+  }
+  return value;
 }
 
+// Optional: validate numeric values
+export function getEnvNumber(key: string, defaultValue?: number): number {
+  const value = process.env[key];
+  if (value === undefined && defaultValue !== undefined) return defaultValue;
+  const num = Number(value);
+  if (isNaN(num)) {
+    throw new Error(`❌ Environment variable ${key} must be a number`);
+  }
+  return num;
+}
+
+// Optional: validate boolean values
+export function getEnvBoolean(key: string, defaultValue?: boolean): boolean {
+  const value = process.env[key];
+  if (value === undefined && defaultValue !== undefined) return defaultValue;
+  return value === 'true' || value === '1';
+}
 
 // export const MONGO_URI = getEnv("MONGO_URI")
 // export const PORT = getEnv("PORT","3000")

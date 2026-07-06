@@ -1,7 +1,16 @@
-import { IInfluencer } from "../../../entities/Influencer.entity";
-import { AuthDTO } from "../../../../../dto/AuthDTO";
+// core/interfaces/services/influencer/IInfluencerAuthService.ts
+import type {
+  RegisterInfluencerDTO,
+  LoginInfluencerDTO,
+  ForgotPasswordDTO,
+  ResetPasswordDTO,
+  AuthResponseDTO,
+  MessageResponseDTO,
+} from '../../../../dto/influencer/influencer-auth.dto';
 
 export interface IInfluencerAuthService {
-    register(data: AuthDTO): Promise<IInfluencer>;
-    login(data: AuthDTO): Promise<{ influencer: IInfluencer; token: string }>;
+  register(data: RegisterInfluencerDTO): Promise<AuthResponseDTO>;
+  login(data: LoginInfluencerDTO): Promise<AuthResponseDTO>;
+  forgotPassword(data: ForgotPasswordDTO): Promise<MessageResponseDTO>;
+  resetPassword(data: ResetPasswordDTO): Promise<MessageResponseDTO>;
 }
