@@ -1,46 +1,79 @@
-import js from "@eslint/js";
-import globals from "globals";
-import tseslint from "typescript-eslint";
-import prettierPlugin from "eslint-plugin-prettier";
-import { defineConfig } from "eslint/config";
+import js from '@eslint/js';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+import prettierPlugin from 'eslint-plugin-prettier';
 
-export default defineConfig([
-  // Ignore build files
+export default [
   {
-    ignores: ["node_modules", "dist", "build"],
+    ignores: ['node_modules/**', 'dist/**', 'build/**', '**/*.json', '**/*.jsonc'], // More explicit patterns
   },
 
-  // Base JS rules
   js.configs.recommended,
 
-  // TypeScript + Node backend
+  // Spread TS recommended configs for better type-aware linting
+  ...tseslint.configs.recommended,
+
+  // JS/TS files (broaden if you have .js too)
   {
-    files: ["**/*.ts"],
+    files: ['**/*.{js,mjs,cjs,ts}'],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
+        ecmaVersion: 'latest',
+        sourceType: 'module',
       },
       globals: globals.node,
     },
     plugins: {
-      "@typescript-eslint": tseslint.plugin,
+      '@typescript-eslint': tseslint.plugin, // Keep for custom rules
       prettier: prettierPlugin,
     },
     rules: {
-      // Backend friendly rules
-      "no-console": "off",
+      /**
+       * IMPORTANT: disable base rule
+       */
+      'no-unused-vars': 'off',
 
-      // TypeScript rules
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        { argsIgnorePattern: "^_" },
+      /**
+       * Use TS rule instead (with your ignore patterns)
+       */
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
       ],
-      "@typescript-eslint/no-explicit-any": "warn",
 
-      // Prettier integration
-      "prettier/prettier": "error",
+      /**
+       * Allow temporary any (warn instead of error for leniency)
+       */
+      '@typescript-eslint/no-explicit-any': 'warn',
+
+      /**
+       * Backend friendly
+       */
+      'no-console': 'off',
+
+      /**
+       * Prettier integration
+       */
+      'prettier/prettier': 'warn',
+
+      // Optional: A few more TS-friendly rules
+      '@typescript-eslint/no-inferrable-types': 'warn',
+      '@typescript-eslint/consistent-type-imports': 'warn',
     },
   },
-]);
+
+  // Optional: For JSON/JSONC files (if you lint package.json, etc.)
+  {
+    files: ['**/*.json', '**/*.jsonc'],
+    plugins: {
+      prettier: prettierPlugin,
+    },
+    rules: {
+      'prettier/prettier': 'warn',
+    },
+  },
+];

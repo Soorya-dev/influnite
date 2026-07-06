@@ -24,3 +24,9 @@ dist-ssr
 *.sln
 *.sw?
 **/README.md
+logs/
+
+client/docs/
+server/docs/
+
+**/docs/
