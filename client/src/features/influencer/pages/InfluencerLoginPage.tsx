@@ -1,5 +1,6 @@
 import { BackgroundBeams } from "../../../components/ui/background-beams";
 import { Link } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function InfluencerLoginPage() {
   return (
@@ -67,14 +68,21 @@ export default function InfluencerLoginPage() {
           </div>
 
           {/* Google Login */}
-          <button className="w-full flex items-center justify-center gap-3 py-3 rounded-lg border border-gray-700 hover:border-purple-500 transition text-white">
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="google"
-              className="w-5 h-5"
-            />
-            Login with Google
-          </button>
+         <div className="flex justify-center">
+  <GoogleLogin
+    theme="filled_black"
+    shape="pill"
+    size="large"
+    text="signin_with"
+    onSuccess={(credentialResponse) => {
+      console.log("Google Login Success");
+      console.log(credentialResponse);
+    }}
+    onError={() => {
+      console.log("Google Login Failed");
+    }}
+  />
+</div>
 
           {/* Signup */}
           <p className="text-center text-gray-400 text-sm mt-6">
