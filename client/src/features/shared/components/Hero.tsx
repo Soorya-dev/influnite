@@ -10,7 +10,7 @@
 //  • Cormorant Garamond display + Outfit body
 //  • No marquee strip — video is the only right-side element
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import bannerVideo from "../../../assets/banner-video.mp4";
 
 // ─── Styles injected once ────────────────────────────────────────────────────
@@ -180,7 +180,6 @@ type WordState = "state-hidden-below" | "state-visible" | "state-hidden-above";
 type Phase = "entering" | "visible" | "exiting";
 
 const STAGGER_MS = 45;
-const ENTER_MS   = 600;
 const HOLD_MS    = 3600;
 const EXIT_MS    = 450;
 
@@ -192,7 +191,7 @@ interface AnimatedHeadlineProps {
 const AnimatedHeadline: React.FC<AnimatedHeadlineProps> = ({ text, phase }) => {
   const words = text.split(" ");
 
-  const getWordState = (i: number): WordState => {
+  const getWordState = (): WordState => {
     if (phase === "visible") return "state-visible";
     if (phase === "entering") return "state-hidden-below";
     return "state-hidden-above";
@@ -210,7 +209,7 @@ const AnimatedHeadline: React.FC<AnimatedHeadlineProps> = ({ text, phase }) => {
         <React.Fragment key={`${i}-${word}`}>
           <span className="word-clip">
             <span
-              className={`word-inner ${getWordState(i)}`}
+              className={`word-inner ${getWordState()}`}
               style={{ transitionDelay: getDelay(i, words.length) }}
             >
               {word}
